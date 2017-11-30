@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>james</groupId>
+    <artifactId>jamesqa</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <!--<packaging>jar</packaging>-->
+
+    <properties>
+        <jdkVersion>1.7</jdkVersion>
+    </properties>
+
+    <profiles>
+        <profile>
+            <id>SkipWebDriverTests</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <!--<skipUITests>true</skipUITests>-->
+                <skipUITests>true</skipUITests>
+            </properties>
+        </profile>
+        <profile>
+            <id>WebDriverTests</id>
+            <properties>
+                <skipUITests>false</skipUITests>
+            </properties>
+        <!--</profile>-->
+    <!--</profiles>-->
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.3</version>
+                <configuration>
+                    <!--<skip>true</skip>-->
+                    <source>${jdkVersion}</source>
+                    <target>${jdkVersion}</target>
+                    <!--<executable>${env.JAVA_HOME}/bin/javac</executable>-->
+                    <!--<fork>true</fork>-->
+                </configuration>
+                <!-- copy tests before running integration tests -->
+                <executions>
+                    <execution>
+                        <phase>test-compile</phase>
+                        <goals>
+                            <goal>testCompile</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.20.1</version>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <!--<artifactId>maven-surefire-plugin</artifactId>-->
+                <version>2.20.1</version>
+                <configuration>
+                    <!--<jvm>${env.JAVA_HOME}/bin/java</jvm>-->
+                    <!-- Don't create a summaryFile ${project.build.directory}/failsafe-reports/failsafe-summary.xml -->
+                    <!--<skipITs>true</skipITs>-->
+                    <skipITs>${skipUITests}</skipITs>
+                    <useFile>false</useFile>
+                    <suiteXmlFiles>
+                        <suiteXmlFile>testsuites/testng.xml</suiteXmlFile>
+                        <!--<suiteXmlFile>testng.xml</suiteXmlFile>-->
+                    </suiteXmlFiles>
+                </configuration>
+
+                <executions>
+                    <execution>
+                        <!--<id>integration-test</id>-->
+                        <!--<phase>test</phase>-->
+                        <goals>
+                            <goal>integration-test</goal>
+                            <!-- Uncomment following line to fail build if any test fails -->
+                            <!--<goal>verify</goal>-->
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+        </profile>
+    </profiles>
+
+    <dependencies>
+        <!-- Test runner / assertion library -->
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <version>6.10</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/com.google.guava/guava -->
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>15.0</version>
+        </dependency>
+    </dependencies>
+
+</project>
